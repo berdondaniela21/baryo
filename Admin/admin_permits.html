@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates & Permits | Baryo</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: { 
+                        brand: { blue: '#13408c', darkblue: '#10367a', yellow: '#facc15' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { supabase } from '../supabase-config.js';
+
+        let activeRequest = { id: null, button: null };
+        let barangayNum = 74;
+
+        // --- AUTH GUARD FIX ---
+        // Instead of external auth-check.js, we check the session here.
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = '../login.html';
+                return;
+            }
+            // Get admin's barangay number from their profile
+            const { data: adminProfile } = await supabase
+                .from('profiles')
+                .select('barangay_code, barangay')
+                .eq('id', session.user.id)
+                .single();
+            barangayNum = parseInt(adminProfile?.barangay_code?.split('-')[0])
+                || parseInt((adminProfile?.barangay || '').replace(/\D/g, ''))
+                || 74;
+        }
+
+        // 1. Fetch live stats
+        async function loadStats() {
+            try {
+                const { count: pendingCount } = await supabase
+                    .from('medical_records')
+                    .select('*, profiles!inner(barangay_code)', { count: 'exact', head: true })
+                    .eq('status', 'pending')
+                    .filter('profiles.barangay_code', 'ilike', `${barangayNum}-%`);
+
+                const { count: completedCount } = await supabase
+                    .from('medical_records')
+                    .select('*, profiles!inner(barangay_code)', { count: 'exact', head: true })
+                    .eq('status', 'completed')
+                    .filter('profiles.barangay_code', 'ilike', `${barangayNum}-%`);
+
+                const todayMidnight = new Date();
+                todayMidnight.setHours(0, 0, 0, 0);
+                const { count: todayCount } = await supabase
+                    .from('medical_records')
+                    .select('*, profiles!inner(barangay_code)', { count: 'exact', head: true })
+                    .gte('created_at', todayMidnight.toISOString())
+                    .filter('profiles.barangay_code', 'ilike', `${barangayNum}-%`);
+
+                document.getElementById('stat-today').innerText = todayCount || 0;
+                document.getElementById('stat-pending').innerText = pendingCount || 0;
+                document.getElementById('stat-completed').innerText = completedCount || 0;
+                document.getElementById('stat-avg').innerText = "12m"; 
+            } catch (err) {
+                console.error("Stats Load Error:", err);
+            }
+        }
+
+        // 2. Fetch live requests
+        async function loadRequests() {
+            const { data, error } = await supabase
+                .from('medical_records')
+                .select(`
+                    id,
+                    status,
+                    message,
+                    file_url,
+                    profiles!inner ( full_name, barangay_code )
+                `)
+                .filter('profiles.barangay_code', 'ilike', `${barangayNum}-%`)
+                .order('created_at', { ascending: false });
+
+            if (error) return console.error("Database Error:", error);
+
+            const tbody = document.getElementById('requests-body');
+            tbody.innerHTML = ''; 
+
+            data.forEach(record => {
+                const isCompleted = record.status === 'completed';
+                const name = record.profiles?.full_name || "Unknown Resident";
+                const initials = name.substring(0, 2).toUpperCase();
+                
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50/50 transition border-b border-gray-50">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-brand-blue/5 border border-brand-blue/10 flex items-center justify-center font-bold text-brand-blue text-xs">${initials}</div>
+                                <div>
+                                    <p class="font-bold text-gray-900 leading-tight">${name}</p>
+                                    <p class="text-[10px] text-gray-400 font-medium">Zone: ${record.profiles?.barangay_code || 'N/A'}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5">
+                            <span class="font-semibold text-gray-700 text-xs">Medical Record</span>
+                            <p class="text-[10px] text-gray-400 font-medium italic">Purpose: ${record.message || 'Not specified'}</p>
+                        </td>
+                        <td class="px-6 py-5 text-center">
+                            <span class="px-3 py-1 ${isCompleted ? 'bg-green-100 text-green-700 border-green-200' : 'bg-yellow-100 text-yellow-700 border-yellow-200'} rounded-lg text-[10px] font-bold uppercase tracking-wider border">
+                                ${record.status}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            ${isCompleted 
+                                ? `<a href="${record.file_url}" target="_blank" class="text-brand-blue font-bold text-[10px] hover:underline uppercase tracking-widest">View Receipt</a>`
+                                : `<button data-id="${record.id}" class="process-btn bg-brand-blue text-white px-4 py-1.5 rounded-lg text-[10px] font-bold shadow-lg shadow-brand-blue/10 hover:bg-brand-darkblue transition">Process</button>`
+                            }
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.querySelectorAll('.process-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => openModal(e.target.dataset.id, e.target));
+            });
+        }
+
+        // 3. Modal & File Logic
+        function openModal(id, button) {
+            activeRequest = { id: id, button: button };
+            document.getElementById('upload-modal').classList.replace('hidden', 'flex');
+        }
+
+        window.closeModal = function() {
+            document.getElementById('upload-modal').classList.replace('flex', 'hidden');
+            document.getElementById('file-preview-container').innerHTML = '';
+            document.getElementById('file-input').value = '';
+        }
+
+        window.handleFileSelect = function(event) {
+            const container = document.getElementById('file-preview-container');
+            container.innerHTML = '';
+            const files = event.target.files;
+
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = "relative group w-20 h-20 rounded-lg overflow-hidden border border-gray-200 bg-gray-50";
+                    div.innerHTML = file.type.startsWith('image/') 
+                        ? `<img src="${e.target.result}" class="w-full h-full object-cover">`
+                        : `<div class="w-full h-full flex items-center justify-center text-[10px] font-bold text-gray-400 p-1 text-center uppercase">DOC</div>`;
+                    container.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        window.finalizeProcess = async function() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            if (!file) return alert("Please select a document to upload.");
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.innerText = "Processing...";
+            submitBtn.disabled = true;
+
+            try {
+                const fileName = `receipts/${activeRequest.id}-${Date.now()}`;
+                const { error: uploadError } = await supabase.storage.from('receipts').upload(fileName, file);
+                if (uploadError) throw uploadError;
+
+                const { data: { publicUrl } } = supabase.storage.from('receipts').getPublicUrl(fileName);
+
+                const { error: updateError } = await supabase
+                    .from('medical_records')
+                    .update({ status: 'completed', file_url: publicUrl })
+                    .eq('id', activeRequest.id);
+
+                if (updateError) throw updateError;
+
+                alert("Request processed!");
+                closeModal();
+                refreshDashboard();
+            } catch (err) {
+                alert("Error: " + err.message);
+            } finally {
+                submitBtn.innerText = "Submit & Complete";
+                submitBtn.disabled = false;
+            }
+        }
+
+        // --- LOGOUT LOGIC ---
+        window.handleLogout = async function() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Logout error:', error.message);
+            }
+            window.location.href = '../login.html';
+        }
+
+        window.refreshDashboard = async function() {
+            await loadStats();
+            await loadRequests();
+        }
+
+        window.onload = async () => {
+            await checkAuth();
+            await refreshDashboard();
+        };
+    </script>
+</head>
+<body class="bg-gray-50 font-sans antialiased text-gray-900 flex min-h-screen">
+
+    <div id="upload-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-brand-blue/20 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-white overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="p-6 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="font-serif font-bold text-brand-blue text-lg">Upload Documents</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <div class="relative group border-2 border-dashed border-gray-200 rounded-2xl p-8 transition hover:border-brand-blue hover:bg-brand-blue/5 text-center">
+                    <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileSelect(event)">
+                    <div class="space-y-2">
+                        <div class="bg-brand-blue/10 w-12 h-12 rounded-full flex items-center justify-center mx-auto group-hover:scale-110 transition">
+                            <svg class="w-6 h-6 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-700">Select file to upload</p>
+                    </div>
+                </div>
+                <div id="file-preview-container" class="flex flex-wrap gap-3"></div>
+                <div class="flex gap-3 pt-2">
+                    <button onclick="closeModal()" class="flex-1 py-3 px-4 bg-gray-100 text-gray-600 rounded-xl font-bold text-xs hover:bg-gray-200 transition">Cancel</button>
+                    <button id="submit-btn" onclick="finalizeProcess()" class="flex-[2] py-3 px-4 bg-brand-blue text-white rounded-xl font-bold text-xs shadow-lg shadow-brand-blue/20 hover:bg-brand-darkblue transition">Submit & Complete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <aside class="w-72 bg-brand-blue text-white hidden lg:flex flex-col sticky top-0 h-screen shadow-2xl">
+        <div class="p-8">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="bg-white p-1 rounded-lg overflow-hidden flex items-center justify-center w-10 h-10">
+                    <a href="../index.html">
+                        <img src="../img/baryo_logo.png" alt="Baryo Logo" class="w-full h-full object-contain">
+                    </a>
+                </div>
+                <span class="font-bold text-2xl tracking-tight">Baryo</span>
+            </div>
+            <p class="text-white/40 text-[10px] uppercase tracking-[0.2em] font-bold">Admin Management</p>
+        </div>
+
+        <nav class="flex-grow px-4 space-y-1">
+            <a href="admin.html" class="flex items-center gap-3 px-4 py-3.5 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Dashboard
+            </a>
+            <a href="admin_residents.html" class="flex items-center gap-3 px-4 py-3.5 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Residents
+            </a>
+            <a href="admin_permits.html" class="flex items-center gap-3 px-4 py-3.5 bg-white/10 rounded-xl font-semibold text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Certificates & Permits
+            </a>
+            <a href="admin_announcements.html" class="flex items-center gap-3 px-4 py-3.5 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                Announcements
+            </a>
+            <a href="admin_events.html" class="flex items-center gap-3 px-4 py-3.5 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                Events
+            </a>
+            <a href="staff.html" class="flex items-center gap-3 px-4 py-3.5 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Staff
+            </a>
+        </nav>
+
+        <div class="p-6 border-t border-white/10">
+            <button onclick="handleLogout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-500/10 text-red-400 font-bold rounded-xl hover:bg-red-500 hover:text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Log Out
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-grow overflow-y-auto">
+        <header class="bg-white border-b border-gray-100 py-4 px-8 flex justify-between items-center sticky top-0 z-30">
+            <div>
+                <h2 class="text-xl font-bold font-serif text-brand-blue">Document Requests</h2>
+                <p class="text-xs text-gray-400 font-medium">Manage barangay clearances and medical permits</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="refreshDashboard()" class="px-5 py-2.5 bg-gray-50 text-gray-500 rounded-xl text-xs font-bold border border-gray-100 hover:bg-gray-100 transition">Refresh</button>
+            </div>
+        </header>
+
+        <div class="p-8 max-w-7xl mx-auto space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">New Today</h4>
+                    <p id="stat-today" class="text-2xl font-bold text-brand-blue">0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm border-l-4 border-l-yellow-400">
+                    <h4 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Total Pending</h4>
+                    <p id="stat-pending" class="text-2xl font-bold text-brand-blue">0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm border-l-4 border-l-green-500">
+                    <h4 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Completed</h4>
+                    <p id="stat-completed" class="text-2xl font-bold text-brand-blue">0</p>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+                    <h4 class="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1">Avg. Processing</h4>
+                    <p id="stat-avg" class="text-2xl font-bold text-brand-blue">0m</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100">
+                        <tr>
+                            <th class="px-8 py-5">Resident</th>
+                            <th class="px-6 py-5">Request Info</th>
+                            <th class="px-6 py-5 text-center">Status</th>
+                            <th class="px-8 py-5 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="requests-body" class="divide-y divide-gray-50 text-sm"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

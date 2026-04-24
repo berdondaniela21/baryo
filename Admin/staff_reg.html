@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Staff | Baryo</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: { 
+                        brand: { blue: '#13408c', darkblue: '#10367a', yellow: '#facc15' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 font-sans antialiased text-gray-900 flex min-h-screen">
+
+    <aside class="w-72 bg-brand-blue text-white hidden lg:flex flex-col sticky top-0 h-screen shadow-2xl">
+        <div class="p-8">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="bg-white p-1 rounded-lg overflow-hidden flex items-center justify-center w-10 h-10">
+                    <a href="../index.html">
+                        <img src="../img/baryo_logo.png" alt="Baryo Logo" class="w-full h-full object-contain">
+                    </a>
+                </div>
+                <span class="font-bold text-2xl tracking-tight">Baryo</span>
+            </div>
+            <p class="text-white/40 text-[10px] uppercase tracking-[0.2em] font-bold">Admin Management</p>
+        </div>
+
+        <nav class="flex-grow px-4 space-y-1">
+            <a href="admin.html" class="flex items-center gap-3 px-4 py-3.5 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Dashboard
+            </a>
+            <a href="admin_residents.html" class="flex items-center gap-3 px-4 py-3.5 text-white/60 hover:text-white hover:bg-white/5 rounded-xl transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Residents
+            </a>
+            <a href="staff.html" class="flex items-center gap-3 px-4 py-3.5 bg-white/10 rounded-xl font-semibold text-white transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                Staff
+            </a>
+        </nav>
+    </aside>
+
+    <main class="flex-grow">
+        <header class="bg-white border-b border-gray-200 px-8 py-6 sticky top-0 z-10">
+            <div class="max-w-4xl mx-auto flex items-center gap-4">
+                <a href="staff.html" class="p-2 hover:bg-gray-100 rounded-full transition text-gray-400 hover:text-brand-blue">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </a>
+                <div>
+                    <h1 class="text-2xl font-bold font-serif text-brand-blue">Add Staff Member</h1>
+                    <p class="text-sm text-gray-500">Create a new account for barangay officials or personnel.</p>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-8 max-w-4xl mx-auto">
+            <form action="#" class="space-y-8 bg-white p-10 rounded-3xl shadow-sm border border-gray-100">
+                
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-brand-blue mb-6 pb-2 border-b border-gray-100">Official Profile</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Full Name</label>
+                            <input type="text" placeholder="e.g. Juan Dela Cruz" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Email Address</label>
+                            <input type="email" placeholder="official@baryo.gov" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Contact Number</label>
+                            <input type="text" placeholder="0917-000-0000" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Employee ID (Optional)</label>
+                            <input type="text" placeholder="BRGY-2026-001" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-brand-blue mb-6 pb-2 border-b border-gray-100">Assignment & Access</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Official Designation</label>
+                            <select class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none bg-white transition cursor-pointer">
+                                <option>Barangay Captain</option>
+                                <option>Barangay Secretary</option>
+                                <option>Barangay Treasurer</option>
+                                <option>Barangay Kagawad</option>
+                                <option>SK Chairman</option>
+                                <option>Health Worker (BHW)</option>
+                                <option>Tanod Response Team</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">System Access Level</label>
+                            <select class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none bg-white transition cursor-pointer">
+                                <option value="admin">Administrator (Full Control)</option>
+                                <option value="secretary">Secretary (Permit Processing)</option>
+                                <option value="editor">Editor (Announcements Only)</option>
+                                <option value="responder">Emergency Responder (View Only)</option>
+                            </select>
+                            <p class="text-[10px] text-gray-400 mt-1 px-1">Access levels define what parts of the Baryo app this user can modify.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-brand-blue mb-6 pb-2 border-b border-gray-100">Temporary Credentials</h3>
+                    <div class="bg-blue-50/50 p-6 rounded-2xl border border-blue-100 mb-6">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-brand-blue mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="text-xs text-brand-blue leading-relaxed font-medium">
+                                Provide a temporary password below. The staff member will be prompted to change this password upon their first login to ensure security.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Temporary Password</label>
+                            <input type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none transition">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase ml-1">Confirm Password</label>
+                            <input type="password" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-brand-blue outline-none transition">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 flex flex-col md:flex-row gap-4">
+                    <button type="submit" class="flex-grow bg-brand-blue text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-900/20 hover:bg-brand-darkblue transition active:scale-[0.98]">
+                        Complete Registration
+                    </button>
+                    <button type="button" onclick="window.location.href='staff.html'" class="px-8 py-4 text-gray-500 font-bold hover:text-red-500 transition">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+</body>
+</html>

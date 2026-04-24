@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barangay 74 | News & Announcements</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#13408c',
+                            darkblue: '#10367a',
+                            lightBlue: '#eef2ff',
+                            yellow: '#facc15'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .nav-item.active { color: #13408c !important; font-weight: 700; border-bottom: 2px solid #13408c; }
+        .filter-btn.active { background-color: #13408c !important; color: white !important; border-color: #13408c !important; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        #mobile-menu {
+            transition: all 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+        }
+        #mobile-menu.active {
+            max-height: 600px;
+            border-top: 1px solid #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans antialiased text-gray-900">
+
+    <div class="bg-brand-yellow text-gray-900 px-4 py-2 text-sm font-medium flex justify-center items-center relative z-50 text-center">
+        <span>Community clean-up drive this Saturday, March 29! All residents are encouraged to join.</span>
+    </div>
+
+    <nav class="bg-white py-4 px-6 md:px-12 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto flex justify-between items-center w-full">
+            <a href="index.html" class="navbar-brand text-brand-blue font-bold text-2xl tracking-tight flex items-center gap-3">
+                <img src="img/baryo_logo.png" alt="Baryo Logo" class="h-10 w-auto object-contain">
+            </a>
+
+            <div class="hidden lg:flex items-center gap-6">
+                <div class="flex gap-6 text-gray-500 font-medium text-sm">
+                    <a href="index.html" class="nav-item nav-link transition hover:text-brand-blue">Home</a>
+                    <a href="about.html" class="nav-item nav-link transition hover:text-brand-blue">About</a>
+                    <a href="Resident/services.html" class="nav-item nav-link transition hover:text-brand-blue">Services</a>
+                    <a href="news.html" class="nav-item nav-link transition hover:text-brand-blue">News</a>
+                    <a href="events.html" class="nav-item nav-link transition hover:text-brand-blue">Events</a>
+                    <a href="Resident/emergency.html" class="nav-item nav-link transition hover:text-brand-blue text-red-600">Emergency</a>
+                    <a href="contact.html" class="nav-item nav-link transition hover:text-brand-blue">Contact</a>
+                </div>
+                <div class="ms-auto pl-6 border-l border-gray-200">
+                    <a href="login.html" class="auth-btn-dynamic nav-item nav-link text-brand-blue font-bold hover:underline">Login</a>
+                </div>
+            </div>
+
+            <button id="menu-btn" class="lg:hidden text-brand-blue focus:outline-none p-2 rounded-lg hover:bg-gray-50">
+                <svg id="menu-icon" class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <div id="mobile-menu" class="lg:hidden bg-white w-full absolute left-0 shadow-xl">
+            <div class="flex flex-col px-6 py-6 gap-4 text-gray-600 font-medium">
+                <a href="index.html" class="hover:text-brand-blue py-2 border-b border-gray-50">Home</a>
+                <a href="about.html" class="hover:text-brand-blue py-2 border-b border-gray-50">About</a>
+                <a href="Resident/services.html" class="hover:text-brand-blue py-2 border-b border-gray-50">Services</a>
+                <a href="news.html" class="hover:text-brand-blue py-2 border-b border-gray-50">News</a>
+                <a href="events.html" class="hover:text-brand-blue py-2 border-b border-gray-50">Events</a>
+                <a href="Resident/emergency.html" class="text-red-600 py-2 border-b border-gray-50">Emergency</a>
+                <a href="contact.html" class="hover:text-brand-blue py-2 border-b border-gray-50">Contact</a>
+                <a href="login.html" class="auth-btn-dynamic text-brand-blue font-bold py-2">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="bg-brand-blue relative overflow-hidden py-16 md:py-20 text-center text-white">
+        <div class="absolute top-[-10%] right-[-5%] w-[30rem] h-[30rem] bg-brand-darkblue rounded-full opacity-40"></div>
+        <div class="absolute bottom-[-15%] left-[-10%] w-[20rem] h-[20rem] bg-brand-darkblue rounded-full opacity-30"></div>
+        <div class="max-w-4xl mx-auto px-6 relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/20 text-brand-yellow text-sm font-medium mb-4">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                Official Barangay Portal
+            </div>
+            <h1 class="text-4xl lg:text-5xl font-bold font-serif mb-4">Barangay 74</h1>
+            <p class="text-white/80 text-lg leading-relaxed">
+                Latest news and announcements for residents of Barangay 74.
+            </p>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+
+        <div class="flex flex-nowrap lg:flex-wrap gap-3 mb-10 overflow-x-auto pb-4 no-scrollbar" id="filter-container">
+            <button class="filter-btn active whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 transition" data-category="All">All</button>
+            <button class="filter-btn bg-white whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 text-gray-600 hover:border-brand-blue transition" data-category="Health">Health</button>
+            <button class="filter-btn bg-white whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 text-gray-600 hover:border-brand-blue transition" data-category="Governance">Governance</button>
+            <button class="filter-btn bg-white whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 text-gray-600 hover:border-brand-blue transition" data-category="Events">Events</button>
+            <button class="filter-btn bg-white whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 text-gray-600 hover:border-brand-blue transition" data-category="Infrastructure">Infrastructure</button>
+            <button class="filter-btn bg-white whitespace-nowrap px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 text-gray-600 hover:border-brand-blue transition" data-category="Social Services">Social Services</button>
+        </div>
+
+        <div id="news-container" class="space-y-6 mb-20">
+            <div class="flex justify-center py-16">
+                <div class="flex flex-col items-center gap-4 text-gray-400">
+                    <svg class="w-10 h-10 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <p class="text-sm font-medium">Loading announcements...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-brand-blue text-white pt-20 pb-8 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <img src="img/baryo_logo.png" alt="Baryo Logo" class="h-8 w-auto brightness-0 invert">
+                    </div>
+                    <p class="text-white/50 text-sm leading-relaxed">Connecting communities through digital governance. Your barangay, always within reach.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Quick Links</h4>
+                    <ul class="space-y-3 text-white/60 text-sm">
+                        <li><a href="Resident/services.html" class="hover:text-brand-yellow transition">Services</a></li>
+                        <li><a href="news.html" class="hover:text-brand-yellow transition">News & Announcements</a></li>
+                        <li><a href="Resident/emergency.html" class="hover:text-brand-yellow transition">Emergency Contacts</a></li>
+                        <li><a href="contact.html" class="hover:text-brand-yellow transition">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Contact Us</h4>
+                    <ul class="space-y-4 text-white/60 text-sm">
+                        <li class="flex items-center gap-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 5.25L3 18c0 1.104.896 2 2 2h14c1.104 0 2-.896 2-2V5.25M3 5.25c0-1.104.896-2 2-2h14c1.104 0 2 .896 2 2M3 5.25l9 6 9-6"/></svg> (02) 8888-1234</li>
+                        <li class="flex items-center gap-3"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg> baryo.inc@gmail.com</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-lg mb-6">Follow Us</h4>
+                    <div class="flex gap-4">
+                        <a href="https://web.facebook.com/profile.php?id=61573365038350" class="bg-white/10 p-2.5 rounded-full hover:bg-brand-yellow hover:text-brand-blue transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" /></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-8 text-center text-white/30 text-xs font-medium tracking-widest uppercase">
+                © 2026 Baryo. All rights reserved. Republic of the Philippines.
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { supabase } from './supabase-config.js';
+
+        // --- Auth UI ---
+        async function updateAuthUI() {
+            const { data: { user } } = await supabase.auth.getUser();
+            document.querySelectorAll('.auth-btn-dynamic').forEach(btn => {
+                if (user) {
+                    btn.textContent = 'Profile';
+                    btn.href = 'profile.html';
+                } else {
+                    btn.textContent = 'Login';
+                    btn.href = 'login.html';
+                }
+            });
+        }
+        updateAuthUI();
+        supabase.auth.onAuthStateChange(() => updateAuthUI());
+
+        // --- News Feed ---
+        let allAnnouncements = [];
+        let activeCategory = 'All';
+
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-PH', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+        }
+
+        function renderAnnouncements(items) {
+            const container = document.getElementById('news-container');
+
+            if (items.length === 0) {
+                container.innerHTML = `
+                    <div class="flex justify-center py-20">
+                        <div class="flex flex-col items-center gap-4 text-gray-400">
+                            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                            <p class="text-lg font-medium">No announcements found</p>
+                            <p class="text-sm">Check back later for updates from Barangay 74.</p>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => `
+                <article class="bg-white p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition flex flex-col md:flex-row gap-6 items-start">
+                    <div class="bg-brand-blue/10 text-brand-blue p-4 rounded-xl shrink-0">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex flex-wrap items-center gap-3 mb-2">
+                            <span class="bg-brand-blue/10 text-brand-blue text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded">${item.category || 'General'}</span>
+                            <span class="text-gray-400 text-xs font-medium">${formatDate(item.published_at || item.created_at)}</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${item.title}</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-4">${item.content || ''}</p>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        async function fetchAnnouncements() {
+            const { data, error } = await supabase
+                .from('announcements')
+                .select('*')
+                .eq('barangay_number', 74)
+                .order('published_at', { ascending: false });
+
+            if (error) {
+                document.getElementById('news-container').innerHTML = `
+                    <div class="flex justify-center py-20">
+                        <div class="flex flex-col items-center gap-4 text-red-400">
+                            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            <p class="text-sm font-medium">Failed to load announcements. Please try again later.</p>
+                        </div>
+                    </div>`;
+                return;
+            }
+
+            allAnnouncements = data || [];
+            renderAnnouncements(allAnnouncements);
+        }
+
+        // --- Filter Logic ---
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeCategory = btn.dataset.category;
+
+                const filtered = activeCategory === 'All'
+                    ? allAnnouncements
+                    : allAnnouncements.filter(a => a.category === activeCategory);
+
+                renderAnnouncements(filtered);
+            });
+        });
+
+        fetchAnnouncements();
+    </script>
+
+    <script>
+        // Mobile menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+            if (mobileMenu.classList.contains('active')) {
+                menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>';
+            } else {
+                menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!menuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                mobileMenu.classList.remove('active');
+                menuIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>';
+            }
+        });
+    </script>
+</body>
+</html>

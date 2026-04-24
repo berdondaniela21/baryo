@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Baryo</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Inter', 'sans-serif'], 
+                        serif: ['Playfair Display', 'serif'] 
+                    },
+                    colors: { 
+                        brand: { 
+                            blue: '#13408c', 
+                            darkblue: '#10367a', 
+                            yellow: '#facc15', 
+                            red: '#e11d48' 
+                        }
+                    },
+                    backgroundImage: {
+                        'baryo-vibrant': "radial-gradient(at 0% 0%, rgba(19, 64, 140, 0.4) 0px, transparent 55%), " +
+                                         "radial-gradient(at 100% 0%, rgba(225, 29, 72, 0.3) 0px, transparent 50%), " +
+                                         "radial-gradient(at 100% 100%, rgba(250, 204, 21, 0.4) 0px, transparent 60%), " +
+                                         "radial-gradient(at 0% 100%, rgba(19, 64, 140, 0.2) 0px, transparent 50%), " +
+                                         "radial-gradient(at 50% 50%, rgba(225, 29, 72, 0.1) 0px, transparent 50%)"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .login-card { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #13408c 0%, #10367a 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px -5px rgba(19, 64, 140, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-white bg-baryo-vibrant font-sans antialiased text-gray-900 min-h-screen flex flex-col">
+
+    <nav class="bg-white/70 backdrop-blur-xl py-4 px-6 md:px-12 flex justify-between items-center shadow-sm sticky top-0 z-50 border-b border-white/20">
+        <a href="index.html" class="navbar-brand text-brand-blue font-bold text-2xl tracking-tight flex items-center gap-2">
+            <div class="p-1 rounded-lg text-white shadow-md">
+                <img src="img/baryo_logo.png" alt="Baryo Logo" class="w-auto h-10 object-contain">
+            </div>
+        </a>
+        <a href="index.html" class="text-sm font-semibold text-brand-blue hover:text-brand-darkblue transition">Back to Home</a>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center px-6 py-12">
+        <div class="max-w-md w-full login-card">
+            <div class="bg-white/90 backdrop-blur-md p-8 md:p-10 rounded-[2.5rem] border border-white shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
+                <div class="text-center mb-8">
+                    <h1 class="text-4xl font-bold font-serif text-brand-blue mb-3">Welcome!</h1>
+                    <p class="text-gray-500 text-sm font-medium">Empowering your community, digitally.</p>
+                </div>
+
+                <!-- Role Selector -->
+                <div class="grid grid-cols-2 gap-3 mb-8">
+                    <button id="tab-resident" onclick="switchTab('resident')" class="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-brand-blue bg-brand-blue text-white transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        <span class="text-xs font-bold uppercase tracking-widest">Resident</span>
+                    </button>
+                    <button id="tab-admin" onclick="switchTab('admin')" class="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-100 bg-white text-gray-400 hover:border-yellow-400 hover:text-yellow-600 transition-all">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                        <span class="text-xs font-bold uppercase tracking-widest">Admin</span>
+                    </button>
+                </div>
+
+                <!-- Resident Form -->
+                <form id="form-resident" class="space-y-5">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-brand-blue/60 uppercase tracking-[0.15em] ml-1">Email Address</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-brand-blue transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206"></path></svg>
+                            </span>
+                            <input type="email" id="resEmail" required placeholder="name@example.com" class="w-full pl-11 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-blue/10 focus:bg-white transition-all">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-brand-blue/60 uppercase tracking-[0.15em] ml-1">Password</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-brand-blue transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </span>
+                            <input type="password" id="resPassword" required placeholder="••••••••" class="w-full pl-11 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-brand-blue/10 focus:bg-white transition-all">
+                        </div>
+                    </div>
+                    <button type="submit" id="resSignInBtn" class="w-full btn-gradient text-white font-bold py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2 active:scale-95 mt-2">
+                        <span>Sign In as Resident</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </button>
+                </form>
+
+                <!-- Admin Form -->
+                <form id="form-admin" class="space-y-5 hidden">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+                        <svg class="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                        <p class="text-xs text-yellow-700 font-medium leading-relaxed">For authorized barangay officials only. Unauthorized access is prohibited.</p>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-brand-blue/60 uppercase tracking-[0.15em] ml-1">Official Email</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-brand-blue transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.206"></path></svg>
+                            </span>
+                            <input type="email" id="adminEmail" placeholder="official@barangay.gov.ph" class="w-full pl-11 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:bg-white transition-all">
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-brand-blue/60 uppercase tracking-[0.15em] ml-1">Password</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-brand-blue transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                            </span>
+                            <input type="password" id="adminPassword" placeholder="••••••••" class="w-full pl-11 pr-4 py-4 rounded-2xl border border-gray-100 bg-gray-50/50 focus:outline-none focus:ring-2 focus:ring-yellow-400/30 focus:bg-white transition-all">
+                        </div>
+                    </div>
+                    <button type="submit" id="adminSignInBtn" class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-4 rounded-2xl shadow-xl flex items-center justify-center gap-2 active:scale-95 mt-2 transition-all">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+                        <span>Submit & Verify Access</span>
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <p class="text-sm text-gray-500 font-medium">New to the community? <a href="register.html" class="text-brand-blue font-black hover:underline decoration-2 underline-offset-4 ml-1">Register Now</a></p>
+                </div>
+            </div>
+            <p class="mt-10 text-center text-[10px] text-brand-blue/40 px-6 font-bold uppercase tracking-widest leading-relaxed">Official Digital Portal <br>Republic of the Philippines</p>
+        </div>
+    </main>
+
+    <script type="module">
+        import { supabase } from './supabase-config.js';
+
+        window.switchTab = function(tab) {
+            const resForm = document.getElementById('form-resident');
+            const adminForm = document.getElementById('form-admin');
+            const resTab = document.getElementById('tab-resident');
+            const adminTab = document.getElementById('tab-admin');
+
+            if (tab === 'resident') {
+                resForm.classList.remove('hidden');
+                adminForm.classList.add('hidden');
+                resTab.className = 'flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-brand-blue bg-brand-blue text-white transition-all';
+                adminTab.className = 'flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-100 bg-white text-gray-400 hover:border-yellow-400 hover:text-yellow-600 transition-all';
+            } else {
+                adminForm.classList.remove('hidden');
+                resForm.classList.add('hidden');
+                adminTab.className = 'flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-yellow-400 bg-yellow-50 text-yellow-700 transition-all';
+                resTab.className = 'flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-gray-100 bg-white text-gray-400 hover:border-brand-blue hover:text-brand-blue transition-all';
+            }
+        };
+
+        // --- Resident Login ---
+        document.getElementById('form-resident').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('resSignInBtn');
+            btn.disabled = true;
+            btn.querySelector('span').innerText = 'Checking...';
+
+            const email = document.getElementById('resEmail').value;
+            const password = document.getElementById('resPassword').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                alert('Login failed: ' + error.message);
+                btn.disabled = false;
+                btn.querySelector('span').innerText = 'Sign In as Resident';
+                return;
+            }
+
+            const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
+            if (profile?.role === 'admin') {
+                window.location.href = 'Admin/admin.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- Admin Login ---
+        document.getElementById('form-admin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('adminSignInBtn');
+            btn.disabled = true;
+            btn.querySelector('span').innerText = 'Verifying...';
+
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                alert('Login failed: ' + error.message);
+                btn.disabled = false;
+                btn.querySelector('span').innerText = 'Submit & Verify Access';
+                return;
+            }
+
+            window.location.href = 'Admin/admin.html';
+        });
+    </script>
+</body>
+</html>
